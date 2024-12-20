@@ -72,9 +72,9 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   function handleAddReview() {
     dispatch(
       addReview({
-        productId: productDetails?.productId,
+        productId: productDetails?._id,
         userId: user?.id,
-        userName: user?.userName,
+        userName: user?.username,
         reviewMessage: reviewMsg,
         reviewValue: rating,
       })
@@ -84,6 +84,8 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         toast({
           title: "Đánh giá sản phẩm thành công",
         });
+        setRating(0);
+        setReviewMsg("");
       }
     });
   }

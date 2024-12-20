@@ -64,10 +64,7 @@ function ClientProductTile({
       </div>
       <CardFooter>
         {product?.quantity === 0 ? (
-          <Button
-            onClick={() => handleAddToCart(product?._id)}
-            className="w-full opacity-60 cursor-not-allowed"
-          >
+          <Button className="w-full opacity-60 cursor-not-allowed">
             Hết hàng
           </Button>
         ) : (

@@ -1,8 +1,9 @@
 const paypal = require("../../helpers/paypal");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
+const User = require("../../models/User");
 const Product = require("../../models/Product");
-const VnPayService = require("../../services/VnPayService");
+const nodeMailer = require("nodemailer");
 
 const createOrder = async (req, res) => {
   try {
@@ -131,6 +132,33 @@ const capturePayment = async (req, res) => {
     await Cart.findByIdAndDelete(getCartId);
 
     await order.save();
+
+    var user = await User.findById(order.userId);
+    console.log(user, "user order");
+
+    var transporter = nodeMailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "dvtrieu03@gmail.com",
+        pass: "ilumvqutexayuoah",
+      },
+    });
+
+    const html = `<h2>Xin chào, ${user.username}</h2><br/> +
+                  <p>Đơn hàng #${order._id} của bạn đã được thanh toán thành công.</p><br/> +
+                  <p>Cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi.</p><br/> +
+                  <p>Hãy kiểm tra email thường xuyên để nhận thông tin đơn hàng và thông tin khuyến mãi nhé!</p>`;
+
+    var mailOptions = {
+      from: "Model Shop <dvtrieu03@gmail.com>",
+      to: "dvtrieu03@gmail.com",
+      subject: "XÁC NHẬN ĐẶT HÀNG THÀNH CÔNG",
+      html: html,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
 
     res.status(200).json({
       success: true,
